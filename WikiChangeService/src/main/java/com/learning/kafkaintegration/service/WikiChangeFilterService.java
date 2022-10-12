@@ -26,14 +26,19 @@ public class WikiChangeFilterService {
     }
 
     public void fetchWikiChangesByFilter(WikiChangeType wikiChangeType, String correlationId) {
-        log.info("in fetchWikiChangesByFilter: {}, correlationId: {} ", wikiChangeType, correlationId);
+        log.info("in fetchWikiChangesByFilter(), wikiChangeType: {}, correlationId: {} ", wikiChangeType, correlationId);
 
         List<WikiChange> wikiChangeList = wikiChangeRepo.getWikiChangesByType(wikiChangeType);
         log.info("filtered WikiChange records count: {}, correlationId: {}", wikiChangeList.size(), correlationId);
 
         if(! CollectionUtils.isEmpty(wikiChangeList)) {
-            responseGenerator.sendResponse(wikiChangeList, correlationId);
+            sendResultSet(wikiChangeList, correlationId);
         }
+    }
 
+    private void sendResultSet(List<WikiChange> wikiChangeList, String correlationId) {
+        log.info("in sendResultSet(), correlationId: {} ", correlationId);
+
+        responseGenerator.sendResponse(wikiChangeList, correlationId);
     }
 }

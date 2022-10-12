@@ -36,7 +36,7 @@ public class ResponseGenerator {
 
         for(Iterator<WikiChange> iterator = wikiChangeList.iterator(); iterator.hasNext();) {
             Message<ResponseMessage> message = MessageBuilder
-                    .withPayload(new ResponseMessage(correlationId, iterator.next()))
+                    .withPayload(new ResponseMessage(iterator.next()))
                     .setHeader(KafkaHeaders.TOPIC, topic)
                     .setHeader(KafkaHeaders.MESSAGE_KEY, correlationId)
                     .setHeader("is-last-record", iterator.hasNext() ? "false" : "true")
@@ -47,22 +47,21 @@ public class ResponseGenerator {
     }
 
     private void sendResponseMessage(Message message) {
-        ListenableFuture<SendResult<String, ResponseMessage>> future = responseMessageKafkaTemplate.send(message);
+        responseMessageKafkaTemplate.send(message)
+                .addCallback(new ListenableFutureCallback<SendResult<String, ResponseMessage>>() {
+                    @Override
+                    public void onFailure(Throwable ex) {
+                        log.error("Sending message to kafka failed!!! message: {}, error: {}", message, ex);
 
-        future.addCallback(new ListenableFutureCallback<SendResult<String, ResponseMessage>>() {
-            @Override
-            public void onFailure(Throwable ex) {
-                log.error("Sending message to kafka failed!!! message: {}, error: {}", message, ex);
+                        //TODO: add retry?
+                    }
 
-                //TODO: add retry?
-            }
+                    @Override
+                    public void onSuccess(SendResult<String, ResponseMessage> result) {
+                        log.info("sent message successfully to partition {} of topic {} with key: {}",
+                                result.getRecordMetadata().partition(), topic, result.getProducerRecord().key());
 
-            @Override
-            public void onSuccess(SendResult<String, ResponseMessage> result) {
-                log.info("sent message successfully to partition {} of topic {} with key: {}",
-                        result.getRecordMetadata().partition(), topic, result.getProducerRecord().key());
-
-            }
-        });
+                    }
+                });
     }
 }

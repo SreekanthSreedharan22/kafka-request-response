@@ -28,10 +28,11 @@ public class WikiChangeRequestsService {
         log.info("in WikiChangeRequestsService.getWikiChangeByFilter()");
 
         String correlationId = RandomStringUtils.random(15, true, true);
-        RequestMessage requestMessage = new RequestMessage(correlationId, wikiChangeType);
+//        RequestMessage requestMessage = new RequestMessage(correlationId, wikiChangeType);
+        RequestMessage requestMessage = new RequestMessage(wikiChangeType);
 
         log.info("sending a RequestMessage with correlationId: {} for wikiChangeType: {}", correlationId, wikiChangeType);
-        querySender.sendRequestMessage(requestMessage);
+        querySender.sendRequestMessage(requestMessage, correlationId);
 
         return CompletableFuture.completedFuture(List.of());
     }

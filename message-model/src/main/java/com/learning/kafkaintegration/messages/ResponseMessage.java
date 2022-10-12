@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public final class ResponseMessage extends Message {
+
+    //    payload
     private WikiChange wikiChange;
 
     // needed for jackson deserialization
@@ -12,8 +14,8 @@ public final class ResponseMessage extends Message {
         super();
     }
 
-    public ResponseMessage(String correlationId, WikiChange wikiChange) {
-        super(correlationId);
+
+    public ResponseMessage(WikiChange wikiChange) {
         this.wikiChange = wikiChange;
     }
 }

@@ -6,11 +6,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 public class MessageMetadata {
-    private String correlationId;
 
-    public MessageMetadata(String correlationId) {
-        this.correlationId = correlationId;
-    }
+    // any domain specific metadata properties could be added here
+
+
 
     public MessageMetadata() {
     }

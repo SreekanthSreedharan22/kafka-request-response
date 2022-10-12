@@ -11,8 +11,7 @@ public final class RequestMessage extends Message {
     public RequestMessage() {
     }
 
-    public RequestMessage(String correlationId, WikiChangeType wikiChangeType) {
-        super(correlationId);
+        public RequestMessage(WikiChangeType wikiChangeType) {
         this.wikiChangeType = wikiChangeType;
     }
 }
